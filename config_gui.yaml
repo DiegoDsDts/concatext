@@ -18,7 +18,7 @@ include_non_text_files: true
 
 # Placeholder text to display for non-text files
 # This text will replace the file content when a file cannot be decoded as text
-non_text_file_placeholder: "This file format is not supported or cannot be decoded.GUI"
+non_text_file_placeholder: "This file format is not supported or cannot be decoded."
 
 # Separator text to insert between files in the output
 # You can use special characters like \n for new lines
