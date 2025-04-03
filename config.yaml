@@ -1,0 +1,47 @@
+#
+# CONCATEXT CONFIGURATION
+#
+
+# Maximum number of tokens per output file
+max_tokens: 250000
+
+# Directory to save output files
+output_dir: "./output"
+
+# Include files that are not readable as text (can't be decoded)
+# If true, these files will be included with a placeholder
+# If false, these files will be skipped completely
+include_non_text_files: true
+
+# Placeholder text to display for non-text files
+# This text will replace the file content when a file cannot be decoded as text
+non_text_file_placeholder: "This file format is not supported or cannot be decoded."
+
+# Separator text to insert between files in the output
+# You can use special characters like \n for new lines
+file_separator: "\n\n"
+
+# Directories to ignore during processing
+ignore_dirs:
+  - node_modules
+  - .git
+  - .vscode
+
+# File patterns to ignore during processing
+ignore_patterns:
+  - ".DS_Store"
+  - ".gitignore"
+  - "package-lock.json"
+
+# Template for formatting file blocks with placeholders:
+# {path} - the relative path to the file
+# {content} - the actual file content
+# {name} - just the file name
+file_template: |
+  ========================================
+  {path} - start
+  ***========================================***
+  {content}
+  ***========================================***
+  {name} - end
+  ========================================
