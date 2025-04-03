@@ -1,0 +1,4 @@
+Yes, this file is completely useless.
+
+It exists only to trick Git into thinking this folder matters.  
+Feel free to delete it, the space-time continuum will survive.
