@@ -719,15 +719,13 @@ class ConcatextGUI:
         if not self.input_dir.get():
             messagebox.showerror("Configuration Error", 
                                 "Input directory not specified!\n\n"
-                                "You must select an input directory before starting the process.\n"
-                                "Use the 'Browse...' button next to the 'Input Directory' field.")
+                                "You must select an input directory before starting the process.")
             return
         
         if not self.output_dir.get():
             messagebox.showerror("Configuration Error", 
                                "Output directory not specified!\n\n"
-                               "You must select an output directory before starting the process.\n"
-                               "Use the 'Browse...' button next to the 'Output Directory' field.")
+                               "You must select an output directory before starting the process.")
             return
         
         try:
