@@ -11,6 +11,7 @@
 - **Customizable Filtering** - Skip specific directories and file patterns
 - **Output Templating** - Custom formatting of file blocks with support for placeholders
 - **Non-text File Handling** - Option to include or exclude binary/non-text files
+- **Text Obscuration** - Replace sensitive words with placeholders to protect private information
 
 ## Requirements
 
@@ -56,6 +57,21 @@ With the GUI, you can:
 - Edit ignored directories and file patterns
 - Customize file templates and separators
 - Process directories with a click of a button
+
+### GUI Text Obscuration
+
+Using the graphical interface, you can define mappings for text obscuration:
+
+1. Click on the "Edit" button in the "Obscuration" section under Advanced Configuration
+2. Add word-to-placeholder mappings where sensitive words will be replaced with placeholders
+   - Example: When you add `password` → `XXXXX`, any occurrence of "password" in the files will be replaced with "XXXXX"
+   - Example: When you add `admin@example.com` → `[EMAIL]`, all instances of that email will be replaced with "[EMAIL]"
+3. All occurrences of the defined sensitive words will be replaced with their placeholders in the output files
+
+This feature is useful for:
+- Protecting sensitive information when sharing code
+- Removing personally identifiable information
+- Anonymizing data before processing
 
 ## Configuration
 
@@ -103,8 +119,17 @@ file_template: |
   ***========================================***
   {name} - end
   ========================================
+
+# Obscured words configuration
+# Define mappings to replace sensitive words with placeholders in the output
+# format: word: placeholder
+obscured_words:
+  # Example (uncomment and modify as needed):
+  # password: "XXXXX"
+  # username: "USER"
 ```
 
 ## Output Format
 
 The tool generates output files with a naming pattern based on the input directory name. Each file in the output contains formatted content from the source files, structured according to the template defined in the configuration.
+````
