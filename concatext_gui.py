@@ -222,51 +222,51 @@ class ListEditorDialog(tk.Toplevel):
         # Keep original items
         self.destroy()
 
-class ObscuredWordsDialog(tk.Toplevel):
-    def __init__(self, parent, words_map=None):
+class TextObscurationDialog(tk.Toplevel):
+    def __init__(self, parent, text_map=None):
         super().__init__(parent)
         self.parent = parent
-        self.title("Obscured Words Mappings")
-        self.geometry("650x500")
-        self.minsize(600, 400)
+        self.title("Text Obscuration Mappings")
+        self.geometry("700x500")
+        self.minsize(700, 500)
         
         # Make the dialog modal
         self.transient(parent)
         self.grab_set()
         
         # Initialize result with the provided mapping or empty dict
-        self.result = words_map or {}
+        self.result = text_map or {}
         
         # Create widgets
         main_frame = ttk.Frame(self, padding="10")
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        help_text = "Define mappings between original words and their obscured placeholders.\nEvery occurrence of the original word will be replaced with its placeholder."
+        help_text = "Define mappings between original text and their obscured placeholders.\nEvery occurrence of the original text will be replaced with its placeholder."
         ttk.Label(main_frame, text=help_text, wraplength=600).pack(anchor=tk.W, pady=(0, 10))
         
         # Input fields for adding new mappings
         input_frame = ttk.Frame(main_frame)
         input_frame.pack(fill=tk.X, pady=(0, 10))
         
-        ttk.Label(input_frame, text="Original word:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        ttk.Label(input_frame, text="Original text:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
         ttk.Label(input_frame, text="Placeholder:").grid(row=0, column=1, padx=5, pady=5, sticky=tk.W)
         
-        self.original_word = tk.StringVar()
+        self.original_text = tk.StringVar()
         self.placeholder = tk.StringVar()
         
-        ttk.Entry(input_frame, textvariable=self.original_word, width=30).grid(row=1, column=0, padx=5, pady=5)
-        ttk.Entry(input_frame, textvariable=self.placeholder, width=30).grid(row=1, column=1, padx=5, pady=5)
-        ttk.Button(input_frame, text="Add Mapping", command=self.add_mapping).grid(row=1, column=2, padx=5, pady=5)
+        ttk.Entry(input_frame, textvariable=self.original_text, width=25).grid(row=1, column=0, padx=5, pady=5)
+        ttk.Entry(input_frame, textvariable=self.placeholder, width=25).grid(row=1, column=1, padx=5, pady=5)
+        ttk.Button(input_frame, text="Add", command=self.add_mapping).grid(row=1, column=2, padx=5, pady=5)
         
         # Table for displaying and managing mappings
         table_frame = ttk.Frame(main_frame)
         table_frame.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
         
         # Treeview for displaying mappings
-        self.tree = ttk.Treeview(table_frame, columns=("word", "placeholder"), show="headings")
-        self.tree.heading("word", text="Original Word")
+        self.tree = ttk.Treeview(table_frame, columns=("text", "placeholder"), show="headings")
+        self.tree.heading("text", text="Original Text")
         self.tree.heading("placeholder", text="Placeholder")
-        self.tree.column("word", width=300)
+        self.tree.column("text", width=300)
         self.tree.column("placeholder", width=300)
         
         # Scrollbar for the treeview
@@ -278,8 +278,8 @@ class ObscuredWordsDialog(tk.Toplevel):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Populate the treeview with existing mappings
-        for word, placeholder in self.result.items():
-            self.tree.insert("", tk.END, values=(word, placeholder))
+        for text, placeholder in self.result.items():
+            self.tree.insert("", tk.END, values=(text, placeholder))
         
         # Remove button
         ttk.Button(main_frame, text="Remove Selected", command=self.remove_selected).pack(pady=10)
@@ -292,7 +292,7 @@ class ObscuredWordsDialog(tk.Toplevel):
         ttk.Button(button_frame, text="Cancel", command=self.cancel_command).pack(side=tk.RIGHT, padx=5)
         
         # Focus and bind events
-        self.original_word.trace_add("write", self.validate_inputs)
+        self.original_text.trace_add("write", self.validate_inputs)
         self.placeholder.trace_add("write", self.validate_inputs)
         
         # Wait for window to be closed
@@ -300,28 +300,28 @@ class ObscuredWordsDialog(tk.Toplevel):
     
     def validate_inputs(self, *args):
         """Validate that both input fields are not empty"""
-        return bool(self.original_word.get().strip() and self.placeholder.get().strip())
+        return bool(self.original_text.get().strip() and self.placeholder.get().strip())
     
     def add_mapping(self):
         """Add a new mapping to the list"""
-        word = self.original_word.get().strip()
+        text = self.original_text.get().strip()
         placeholder = self.placeholder.get().strip()
         
-        if not word or not placeholder:
-            messagebox.showwarning("Validation Error", "Both original word and placeholder are required.")
+        if not text or not placeholder:
+            messagebox.showwarning("Validation Error", "Both original text and placeholder are required.")
             return
         
-        # Check if word already exists
+        # Check if text already exists
         for item_id in self.tree.get_children():
-            if self.tree.item(item_id)['values'][0] == word:
+            if self.tree.item(item_id)['values'][0] == text:
                 self.tree.delete(item_id)
                 break
         
         # Add to treeview
-        self.tree.insert("", tk.END, values=(word, placeholder))
+        self.tree.insert("", tk.END, values=(text, placeholder))
         
         # Clear input fields
-        self.original_word.set("")
+        self.original_text.set("")
         self.placeholder.set("")
     
     def remove_selected(self):
@@ -340,8 +340,8 @@ class ObscuredWordsDialog(tk.Toplevel):
         self.result = {}
         for item_id in self.tree.get_children():
             values = self.tree.item(item_id)['values']
-            word, placeholder = values
-            self.result[word] = placeholder
+            text, placeholder = values
+            self.result[text] = placeholder
         
         self.destroy()
     
@@ -356,6 +356,10 @@ class ConcatextGUI:
         self.root.title("Concatext")
         self.root.geometry("580x740")
         self.root.minsize(580, 600)
+        
+        # Configura lo stile dei pulsanti per ridurre il padding interno
+        style = ttk.Style()
+        style.configure('TButton', padding=(2, 0))  # Riduzione del padding orizzontale (sinistra, destra)
         
         # Variables for configurations
         self.input_dir = tk.StringVar()
@@ -423,8 +427,8 @@ class ConcatextGUI:
         ignore_buttons_frame.pack(side=tk.RIGHT)
         
         # Create buttons with same width
-        ttk.Button(ignore_buttons_frame, text="Files", width=10, command=self.edit_ignore_patterns).pack(side=tk.RIGHT, padx=2)
-        ttk.Button(ignore_buttons_frame, text="Folders", width=10, command=self.edit_ignore_dirs).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(ignore_buttons_frame, text="Files", width=8, command=self.edit_ignore_patterns).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(ignore_buttons_frame, text="Folders", width=8, command=self.edit_ignore_dirs).pack(side=tk.RIGHT, padx=2)
         
         # Frame for advanced configurations
         advanced_config_frame = ttk.LabelFrame(main_frame, text="Advanced Configuration", padding="10")
@@ -441,20 +445,20 @@ class ConcatextGUI:
         template_buttons_frame.pack(side=tk.RIGHT)
         
         # Create buttons with same width
-        ttk.Button(template_buttons_frame, text="File Separator", width=10, command=self.edit_separator).pack(side=tk.RIGHT, padx=2)
-        ttk.Button(template_buttons_frame, text="File Template", width=10, command=self.edit_template).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(template_buttons_frame, text="Separator", width=8, command=self.edit_separator).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(template_buttons_frame, text="Template", width=8, command=self.edit_template).pack(side=tk.RIGHT, padx=2)
         
         # Obscured words frame
         obscured_frame = ttk.Frame(advanced_config_frame)
         obscured_frame.pack(fill=tk.X, padx=5, pady=5)
         
-        ttk.Label(obscured_frame, text="Obscured Words:").pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Label(obscured_frame, text="Obscuration:").pack(side=tk.LEFT, padx=(0, 10))
         
         # Button for obscured words settings
         obscured_buttons_frame = ttk.Frame(obscured_frame)
         obscured_buttons_frame.pack(side=tk.RIGHT)
         
-        ttk.Button(obscured_buttons_frame, text="Edit Mappings", width=10, command=self.edit_obscured_words).pack(side=tk.RIGHT, padx=2)
+        ttk.Button(obscured_buttons_frame, text="Edit", width=8, command=self.edit_text_obscuration).pack(side=tk.RIGHT, padx=2)
         
         # Non-text file options
         unsupported_frame = ttk.Frame(advanced_config_frame)
@@ -472,7 +476,7 @@ class ConcatextGUI:
         unsupported_btn_frame = ttk.Frame(unsupported_frame)
         unsupported_btn_frame.pack(side=tk.RIGHT)
         
-        self.edit_non_text_msg_button = ttk.Button(unsupported_btn_frame, text="placeholder", width=10, command=self.edit_non_text_message)
+        self.edit_non_text_msg_button = ttk.Button(unsupported_btn_frame, text="Placeholder", width=8, command=self.edit_non_text_message)
         self.edit_non_text_msg_button.pack(side=tk.RIGHT, padx=2)
         
         # Disable the button if include_non_text is False
@@ -603,12 +607,12 @@ class ConcatextGUI:
         self.ignore_patterns = dialog.result
         self.log_message(f"Ignored patterns updated. {len(self.ignore_patterns)} patterns in list.")
     
-    def edit_obscured_words(self):
-        """Open dialog to manage obscured words mappings"""
-        dialog = ObscuredWordsDialog(self.root, self.obscured_words)
+    def edit_text_obscuration(self):
+        """Open dialog to manage text obscuration mappings"""
+        dialog = TextObscurationDialog(self.root, self.obscured_words)
         if dialog.result is not None:
             self.obscured_words = dialog.result
-            self.log_message(f"Obscured words mappings updated. {len(self.obscured_words)} words configured.")
+            self.log_message(f"Text obscuration mappings updated. {len(self.obscured_words)} items configured.")
     
     def browse_input_dir(self):
         directory = filedialog.askdirectory(title="Select Input Directory")
@@ -728,7 +732,7 @@ class ConcatextGUI:
         
         try:
             max_tokens = int(self.max_tokens.get())
-            if max_tokens <= 0:
+            if (max_tokens <= 0):
                 messagebox.showerror("Error", "Maximum number of tokens must be greater than zero!")
                 return
         except ValueError:
@@ -803,4 +807,4 @@ def main():
     root.mainloop()
 
 if __name__ == "__main__":
-    main() 
+    main()
