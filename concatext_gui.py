@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 concatext_gui.py
 
@@ -13,6 +12,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk, messagebox, simpledialog
 from pathlib import Path
 import threading
+import subprocess
 
 # Import functionalities from the main module
 import concatext
@@ -530,14 +530,14 @@ class ConcatextGUI:
     def edit_template(self):
         """Open a dialog to edit the file template"""
         dialog = TemplateEditorDialog(self.root, self.file_template)
-        if dialog.result is not None:
+        if (dialog.result is not None):
             self.file_template = dialog.result
             self.log_message("File template updated.")
     
     def edit_separator(self):
         """Open a dialog to edit the file separator"""
         dialog = SeparatorEditorDialog(self.root, self.file_separator)
-        if dialog.result is not None:
+        if (dialog.result is not None):
             self.file_separator = dialog.result
             self.log_message("File separator updated.")
     
@@ -610,7 +610,7 @@ class ConcatextGUI:
     def edit_text_obscuration(self):
         """Open dialog to manage text obscuration mappings"""
         dialog = TextObscurationDialog(self.root, self.obscured_words)
-        if dialog.result is not None:
+        if (dialog.result is not None):
             self.obscured_words = dialog.result
             self.log_message(f"Text obscuration mappings updated. {len(self.obscured_words)} items configured.")
     
@@ -772,12 +772,159 @@ class ConcatextGUI:
             processor = concatext.DirContentProcessor(config)
             processor.process_dir()
             
-            # Show a message on completion
-            self.root.after(0, lambda: messagebox.showinfo("Completed", "Processing completed successfully!"))
+            # Show a custom completion dialog with option to open output folder
+            self.root.after(0, self.show_completion_dialog)
         except Exception as e:
             error_msg = f"Error during processing: {str(e)}"
             self.log_message(error_msg)
             self.root.after(0, lambda: messagebox.showerror("Error", error_msg))
+    
+    def show_completion_dialog(self):
+        """Shows a completion message with options to open the output folder"""
+        # First make sure the main window's geometry is up to date
+        self.root.update_idletasks()
+        
+        # Get parent window position and size
+        parent_x = self.root.winfo_x()
+        parent_y = self.root.winfo_y()
+        parent_width = self.root.winfo_width()
+        parent_height = self.root.winfo_height()
+        
+        # Use fixed dimensions that ensure all content is visible
+        dialog_width = 500
+        dialog_height = 220
+        
+        # Calculate position to center the dialog relative to parent
+        pos_x = parent_x + (parent_width // 2) - (dialog_width // 2)
+        pos_y = parent_y + (parent_height // 2) - (dialog_height // 2)
+        
+        # Ensure dialog remains on screen
+        pos_x = max(0, pos_x)
+        pos_y = max(0, pos_y)
+        
+        # Create dialog with position already set to avoid flickering
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Process Completed")
+        dialog.geometry(f"{dialog_width}x{dialog_height}+{pos_x}+{pos_y}")
+        
+        # Make dialog resizable
+        dialog.resizable(True, True)
+        
+        # Set a minimum size
+        dialog.minsize(450, 220)
+        
+        # Make dialog modal
+        dialog.transient(self.root)
+        dialog.grab_set()
+        
+        # Apply a solid border
+        if sys.platform == "darwin":  # macOS specific styling
+            dialog.configure(background='#ececec')  # Match macOS dialog background
+        
+        # Create a main frame with padding
+        main_frame = ttk.Frame(dialog, padding="20")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Top content frame that expands
+        content_frame = ttk.Frame(main_frame)
+        content_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Success message with icon (using Unicode character for simplicity and cross-platform support)
+        message_frame = ttk.Frame(content_frame)
+        message_frame.pack(fill=tk.X, pady=(0, 15))
+        
+        # Success icon (checkmark)
+        success_label = ttk.Label(
+            message_frame,
+            text="✓",
+            font=("", 24, "bold"),  # Increased font size
+            foreground="green"
+        )
+        success_label.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Success text
+        ttk.Label(
+            message_frame,
+            text="Processing completed successfully!",
+            font=("", 16, "bold")  # Increased font size
+        ).pack(side=tk.LEFT, fill=tk.X)
+        
+        # Output folder information with better formatting
+        output_path = Path(self.output_dir.get()).resolve()
+        path_frame = ttk.Frame(content_frame)
+        path_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        ttk.Label(
+            path_frame,
+            text="Output location:",
+            font=("", 14)  # Increased font size
+        ).pack(anchor=tk.W)
+        
+        # Display path 
+        path_display = ttk.Label(
+            path_frame,
+            text=str(output_path),
+            font=("", 14)  # Increased font size
+        )
+        path_display.pack(anchor=tk.W, padx=(10, 0))
+        
+        # Bottom frame that doesn't expand - always stays at bottom
+        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame.pack(side=tk.BOTTOM, fill=tk.X)
+        
+        # Add a separator for visual distinction
+        ttk.Separator(bottom_frame, orient='horizontal').pack(fill=tk.X, pady=10)
+        
+        # Buttons frame
+        button_frame = ttk.Frame(bottom_frame)
+        button_frame.pack(fill=tk.X)
+        
+        # Open folder button with improved styling
+        open_button = ttk.Button(
+            button_frame, 
+            text="Open Output Folder", 
+            command=lambda: [self.open_output_folder(), dialog.destroy()]
+        )
+        open_button.pack(side=tk.LEFT, padx=5)
+        
+        # Focus on the open button as the default action
+        open_button.focus_set()
+        
+        # Close button
+        ttk.Button(
+            button_frame, 
+            text="Close", 
+            command=dialog.destroy
+        ).pack(side=tk.RIGHT, padx=5)
+        
+        # Add keyboard shortcuts
+        dialog.bind("<Return>", lambda e: [self.open_output_folder(), dialog.destroy()])  # Enter key
+        dialog.bind("<Escape>", lambda e: dialog.destroy())  # Escape key
+    
+    def center_window(self, window):
+        """Centers a window relative to its parent"""
+        window.update_idletasks()
+        
+        # Get parent window position and size
+        parent_x = self.root.winfo_x()
+        parent_y = self.root.winfo_y()
+        parent_width = self.root.winfo_width()
+        parent_height = self.root.winfo_height()
+        
+        # Get dialog size
+        window_width = window.winfo_width()
+        window_height = window.winfo_height()
+        
+        # Calculate position to center the dialog relative to parent
+        pos_x = parent_x + (parent_width // 2) - (window_width // 2)
+        pos_y = parent_y + (parent_height // 2) - (window_height // 2)
+        
+        # Ensure dialog remains on screen
+        pos_x = max(0, pos_x)
+        pos_y = max(0, pos_y)
+        
+        # Set position
+        window.geometry(f"+{pos_x}+{pos_y}")
 
     def remove_focus(self, event):
         # Get the widget that was clicked
@@ -798,6 +945,28 @@ class ConcatextGUI:
         self.log_area.config(state='normal')  # Temporarily enable writing
         self.log_area.delete("1.0", tk.END)  # Delete all content
         self.log_area.config(state='disabled')  # Disable writing again
+
+    def open_output_folder(self):
+        """Opens the output folder in the system's file explorer"""
+        output_dir = Path(self.output_dir.get()).resolve()
+        
+        if not output_dir.exists():
+            messagebox.showerror("Error", f"Output directory '{output_dir}' does not exist!")
+            return
+            
+        try:
+            # Open folder based on operating system
+            if sys.platform == "win32":
+                os.startfile(output_dir)
+            elif sys.platform == "darwin":  # macOS
+                subprocess.run(["open", output_dir])
+            else:  # linux/unix
+                subprocess.run(["xdg-open", output_dir])
+                
+            self.log_message(f"Output folder opened: {output_dir}")
+        except Exception as e:
+            self.log_message(f"Error opening output folder: {str(e)}")
+            messagebox.showerror("Error", f"Unable to open output folder: {str(e)}")
 
 def main():
     root = tk.Tk()
