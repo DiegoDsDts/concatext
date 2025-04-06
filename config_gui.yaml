@@ -48,3 +48,11 @@ file_template: |
   ***========================================***
   {name} - end
   ========================================
+
+# Obscured words configuration
+# Define mappings to replace sensitive words with placeholders in the output
+# format: word: placeholder
+obscured_words:
+  # Example (uncomment and modify as needed):
+  # password: "XXXXX"
+  # username: "USER"

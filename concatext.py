@@ -22,6 +22,7 @@ from nltk.tokenize import word_tokenize
 import ssl
 import time
 import argparse
+import re
 from datetime import datetime
 
 # Configure logging
@@ -118,6 +119,8 @@ def load_config(config_path='config.yaml', override_dir_path=None):
         config["non_text_file_placeholder"] = "non-text file placeholder"
     if "file_separator" not in config:
         config["file_separator"] = "\n\n"  # Default separator between files
+    if "obscured_words" not in config:
+        config["obscured_words"] = {}  # Default empty mapping for obscured words
     
     return config
 
@@ -153,6 +156,15 @@ class DirContentProcessor:
         # Configuration for non-text files
         self.include_non_text_files = config["include_non_text_files"]
         self.non_text_file_placeholder = config["non_text_file_placeholder"]
+        
+        # Configuration for obscured words
+        self.obscured_words = config.get("obscured_words", {})
+        # Compile regex patterns for word replacements (only once for efficiency)
+        self.obscured_patterns = []
+        for word, placeholder in self.obscured_words.items():
+            # Create a regex that matches the word as a whole word
+            pattern = re.compile(r'\b' + re.escape(word) + r'\b')
+            self.obscured_patterns.append((pattern, placeholder))
 
     def format_file_block(self, relative_path, file_content):
         """Returns a formatted text block using the template from config."""
@@ -165,6 +177,18 @@ class DirContentProcessor:
         formatted_block = formatted_block.replace("{content}", file_content)
         
         return formatted_block
+
+    def apply_obscured_words(self, text):
+        """Apply word obscuring to text based on the defined mappings."""
+        if not self.obscured_words:
+            return text
+            
+        # Apply each pattern sequentially
+        result = text
+        for pattern, replacement in self.obscured_patterns:
+            result = pattern.sub(replacement, result)
+            
+        return result
 
     def count_tokens(self, text):
         """Count tokens in text using NLTK tokenizer."""
@@ -218,6 +242,9 @@ class DirContentProcessor:
             file_content = error_message
             self.non_text_files_count += 1
             logger.warning(f"Non-text file {file_path}: {str(e)}")
+
+        # Apply word obscuring if configured
+        file_content = self.apply_obscured_words(file_content)
 
         relative_path = str(file_path.relative_to(self.dir_path))
         path_block = self.format_file_block(relative_path, file_content)
@@ -275,6 +302,10 @@ class DirContentProcessor:
         print(f"  • Non-text files: {self.non_text_files_count} {non_text_status}")
         print(f"  • Ignored files: {ignored_files_count}")
         print(f"  • Ignored directories: {ignored_dirs_count}")
+        
+        # Obscured words statistics
+        if self.obscured_words:
+            print(f"  • Words obscured: {len(self.obscured_words)}")
         
         # Output files
         print(f"\nOUTPUT ({len(self.output_files)})")
