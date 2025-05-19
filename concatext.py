@@ -137,8 +137,13 @@ class DirContentProcessor:
         self.start_time = time.time()
         self.output_files = []  # Tracks generated output files
         
-        # Set the output directory
+        # Set the output directory and ensure it exists
         self.output_dir = Path(config["output_dir"]).resolve()
+        try:
+            self.output_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            logger.error(f"Failed to create output directory '{self.output_dir}': {e}")
+            exit(1)
 
         # Get the directory name for output file naming
         self.dir_name = self.dir_path.name
