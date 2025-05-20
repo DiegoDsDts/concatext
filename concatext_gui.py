@@ -927,17 +927,13 @@ class ConcatextGUI:
         window.geometry(f"+{pos_x}+{pos_y}")
 
     def remove_focus(self, event):
-        # Get the widget that was clicked
+        """Clear focus from entry-like widgets when clicking elsewhere."""
         widget = event.widget
-        
-        # If the clicked widget is not an input widget, remove focus from all input widgets
+
+        # When clicking outside of input widgets, simply move focus back to the
+        # root window. Previously the code attempted to shift focus to each
+        # child widget, which is unnecessary and caused extra focus events.
         if not isinstance(widget, (ttk.Entry, tk.Text, tk.Listbox)):
-            # Remove focus from all input widgets
-            for child in self.root.winfo_children():
-                if isinstance(child, (ttk.Entry, tk.Text, tk.Listbox)):
-                    child.focus_set()
-                    child.focus_force()
-            # Set focus back to root window
             self.root.focus_set()
 
     def clear_log(self):
