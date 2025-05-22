@@ -1,0 +1,95 @@
+/* src/components/modals/ObscurationEditorModal.module.css */
+.obscurationEditorContainer {
+  /* General modal body styling from ModalBase.module.css */
+}
+
+.addMappingControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem; /* Consistent gap */
+  margin-bottom: 1rem; /* Consistent margin */
+  align-items: center;
+}
+
+.mappingInput {
+  flex: 1 1 180px; /* Allow inputs to grow/shrink, base size */
+  /* Styles inherited from .modalBody input in ModalBase.module.css or index.css */
+}
+
+.addButton {
+  /* composes: btn btn-primary from global; */
+  /* Replicating essential styles for clarity */
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  flex-shrink: 0;
+}
+.addButton:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.mappingsList {
+  list-style-type: none;
+  padding: 0;
+  max-height: 280px; /* Slightly increased max height */
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color); /* Subtle background for list area */
+}
+
+.mappingEntry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.75rem; /* Adjusted padding */
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+}
+.mappingEntry:last-child {
+  border-bottom: none;
+}
+
+.mappingText {
+  word-break: break-all;
+  padding-right: 0.75rem;
+}
+.mappingText code {
+  /* Inherits from ModalBase.module.css or index.css */
+  /* Example: background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; */
+}
+
+.removeButton {
+  /* composes: btn btn-danger from global; */
+  /* Replicating essential styles */
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  flex-shrink: 0;
+}
+.removeButton:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.emptyMappingsMessage {
+  text-align: center;
+  color: var(--text-color-muted);
+  font-style: italic;
+  padding: 1.5rem; /* More padding */
+  font-size: 0.9rem;
+}

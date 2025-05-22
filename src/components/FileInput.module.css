@@ -1,0 +1,45 @@
+/* src/components/FileInput.module.css */
+.fileInputContainer {
+  margin-bottom: 1.25rem; /* Increased margin */
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--component-background); /* Consistent with panels */
+}
+
+.fileUploadLabel {
+  /* Adopting .btn and .btn-primary styles from index.css */
+  /* If composes is not working reliably across all build setups for global classes,
+     replicate essential styles or add global classes directly in JSX.
+     For this example, I'll replicate key properties. */
+  display: inline-block;
+  padding: 0.5rem 1rem; /* Standard button padding */
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  margin-bottom: 0.75rem; /* Space below button */
+}
+
+.fileUploadLabel:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.fileUploadInput {
+  display: none; /* Default input remains hidden */
+}
+
+.fileInfoDisplay {
+  margin-top: 0.5rem;
+  font-size: 0.875em; /* Consistent small text size */
+  color: var(--text-color-muted); /* Muted color for info text */
+  padding: 0.5rem;
+  background-color: var(--background-color); /* Slightly different background for info */
+  border-radius: var(--border-radius);
+  min-height: 1.5em; /* Ensure it has some height even when empty */
+}

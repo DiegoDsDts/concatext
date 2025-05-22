@@ -1,0 +1,88 @@
+/* src/components/modals/ListEditorModal.module.css */
+.listEditorContainer {
+  /* General modal body styling from ModalBase.module.css */
+}
+
+.addItemControls {
+  display: flex;
+  margin-bottom: 1rem; /* Consistent margin */
+  gap: 0.75rem; /* Consistent gap */
+}
+
+.addItemInput {
+  flex-grow: 1;
+  /* Styles inherited from .modalBody input in ModalBase.module.css or index.css */
+}
+
+.addButton {
+  /* composes: btn btn-primary from global; */
+  /* Replicating essential styles for clarity */
+  padding: 0.4rem 1rem; /* Adjusted padding for modal context */
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.addButton:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.itemList {
+  list-style-type: none;
+  padding: 0;
+  max-height: 280px; /* Slightly increased max height */
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--background-color); /* Subtle background for list area */
+}
+
+.itemEntry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.75rem; /* Adjusted padding */
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+}
+.itemEntry:last-child {
+  border-bottom: none;
+}
+
+.itemText {
+  word-break: break-all;
+  padding-right: 0.75rem;
+}
+
+.removeButton {
+  /* composes: btn btn-danger from global; */
+  /* Replicating essential styles */
+  padding: 0.3rem 0.6rem; /* Smaller padding for remove buttons */
+  font-size: 0.8rem; /* Smaller font */
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  flex-shrink: 0;
+}
+.removeButton:hover {
+  background-color: #c82333; /* Darker red */
+  border-color: #bd2130;
+}
+
+.emptyListMessage {
+  text-align: center;
+  color: var(--text-color-muted);
+  font-style: italic;
+  padding: 1.5rem; /* More padding */
+  font-size: 0.9rem;
+}

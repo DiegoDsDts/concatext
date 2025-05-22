@@ -1,135 +1,116 @@
-# Concatext
+# Concatext - Solid.JS Web Version
 
-**Concatext** is a utility tool for concatenating the contents of a local directory into structured text files with a configurable token limit. It's designed to help process codebases and directories into a format that can be easily consumed by LLMs (Large Language Models) or other text processing tools.
+**Concatext** is a client-side web application for concatenating the contents of a local directory into structured text files. It's designed to help process codebases and directories into a format that can be easily consumed by LLMs (Large Language Models) or other text processing tools, inspired by an original Python project. All processing is done in your browser, ensuring your files remain private.
 
 ## Features
 
-- **Command Line Interface** - Process directories through a simple command-line tool
-- **Graphical User Interface** - User-friendly GUI for configuring and running processes
-- **Smart Token Management** - Automatically splits output into multiple files based on token count
-- **Configurable Output** - Control how files are formatted in the output
-- **Customizable Filtering** - Skip specific directories and file patterns
-- **Output Templating** - Custom formatting of file blocks with support for placeholders
-- **Non-text File Handling** - Option to include or exclude binary/non-text files
-- **Text Obscuration** - Replace sensitive words with placeholders to protect private information
+-   **Client-Side Processing**: All file selection, processing, and concatenation happen directly in your web browser. No files are uploaded to any server.
+-   **Directory Selection**: Uses the browser's built-in capabilities to select local directories.
+-   **Configurable Token Limits**: Automatically splits the output into multiple files based on a configurable token count per chunk, powered by `gpt-tokenizer`.
+-   **Customizable Output Formatting**:
+    -   **File Template**: Define a custom template for how each file's content (path, name, actual content) is formatted in the output.
+    -   **File Separator**: Specify custom text to be inserted between each concatenated file block.
+-   **Advanced Filtering**:
+    -   **Ignore Directories**: Specify a list of directory names (e.g., `node_modules`, `.git`) to exclude from processing.
+    -   **Ignore File Patterns**: Define file patterns (e.g., `*.log`, `package-lock.json`) to ignore specific files.
+-   **Text Obscuration**: Replace sensitive words or patterns with placeholders (e.g., API keys, personal information) to protect privacy.
+-   **Non-Text File Handling**: Option to include a placeholder for non-text/binary files or skip them entirely.
+-   **Download Results**:
+    -   Download generated output chunks as individual `.txt` files.
+    -   Download all chunks conveniently packaged into a single `.zip` archive.
+-   **Configuration Persistence**: All your settings (token limits, templates, ignore lists, etc.) are automatically saved in your browser's local storage for your convenience.
 
-## Requirements
+## How to Use (Web Application)
 
-- Python 3.6+
-- NLTK library (for tokenization)
-- PyYAML (for configuration)
-- Tkinter (for GUI)
+1.  **Access the Application**:
+    *   If deployed, open the provided application URL in your web browser.
+    *   To run locally, follow the "Running Locally" instructions below and open `http://localhost:3000` (or the specified port).
 
-## Installation
+2.  **Select Input Directory**:
+    *   Click the "Select Folder" button.
+    *   Your browser's file dialog will appear; choose the local directory you want to process.
 
-1. Clone the repository
-2. Install the required dependencies:
+3.  **Configure Options**:
+    *   Adjust settings in the "Configuration" panel on the left:
+        *   **Max Tokens per Chunk**: Set the maximum number of tokens (estimated by `gpt-tokenizer`) for each output file.
+        *   **Include Non-Text Files**: Check this to include placeholders for binary/non-text files. Uncheck to skip them.
+        *   **Non-Text File Placeholder**: If including non-text files, customize the placeholder text.
+        *   **Advanced Formatting**: Click "Edit File Template" or "Edit File Separator" to open modal dialogs for customizing these settings.
+        *   **Filtering & Obscuration**: Use the "Edit..." buttons to manage lists of ignored directories, ignored file patterns, and word/placeholder mappings for text obscuration.
 
-   ```
-   pip install nltk pyyaml
-   ```
-3. Ensure Tkinter is installed (usually comes with Python)
+4.  **Start Processing**:
+    *   Once configured, click the "Start Processing" button.
+    *   The configuration panel will be disabled during processing.
 
-## Usage
+5.  **Monitor Progress**:
+    *   View real-time progress, logs, and any error messages in the "Log / Progress" area on the right.
 
-### Command Line Interface
+6.  **Download Output**:
+    *   After processing is complete, download links will appear in the "Download Output Chunks" area.
+    *   If multiple chunks are generated, a `.zip` file containing all chunks will be offered. If only one chunk is produced, a single `.txt` file will be available.
 
-Process a directory with default settings:
+## Configuration Details
 
-```
-python concatext.py /path/to/directory
-```
+The following options can be configured directly in the UI:
 
-The script uses settings defined in `config.yaml` in the current directory. If a directory path is specified via command line, it takes precedence over the value in the config file.
+-   **Max Tokens per Chunk**: Maximum token count for each output text file.
+-   **Include Non-Text Files**: Boolean to include or skip binary/non-text files.
+-   **Non-Text File Placeholder**: Template string for non-text file content (uses `{name}` and `{path}`).
+-   **File Template**: String template for formatting each file block (placeholders: `{path}`, `{name}`, `{content}`).
+-   **File Separator**: String to insert between concatenated files.
+-   **Ignored Directories**: List of directory names to skip.
+-   **Ignored File Patterns**: List of file name patterns (supports basic wildcards like `*name*`, `name*`, `*name`) to skip.
+-   **Obscured Words**: A map of words/patterns to their desired placeholder text.
 
-### Graphical User Interface
+All these settings are automatically saved to your browser's local storage, so they will be remembered the next time you use the application.
 
-Launch the GUI application:
+## Tokenization Note
 
-```
-python concatext_gui.py
-```
+This web application uses the `gpt-tokenizer` library for counting tokens. This library is designed to match the tokenization behavior of OpenAI's GPT models (specifically, `cl100k_base` for models like GPT-3.5 and GPT-4). This ensures that the token limits you set correspond closely to how these LLMs would count tokens. This differs from the NLTK library that might have been used in other (e.g., Python) versions of similar tools.
 
-With the GUI, you can:
+## Running Locally (Development Setup)
 
-- Select input and output directories
-- Configure token limits
-- Edit ignored directories and file patterns
-- Customize file templates and separators
-- Process directories with a click of a button
+To run Concatext (Solid.JS Web Version) on your local machine:
 
-### GUI Text Obscuration
+1.  **Prerequisites**:
+    *   Node.js (version 18.x or later recommended)
+    *   npm (usually comes with Node.js) or pnpm/yarn.
 
-Using the graphical interface, you can define mappings for text obscuration:
+2.  **Get the Code**:
+    *   Clone the repository:
+        ```bash
+        git clone <repository_url>
+        cd concatext-solidjs 
+        ```
+    *   Or download and extract the source code.
 
-1. Click on the "Edit" button in the "Obscuration" section under Advanced Configuration
-2. Add word-to-placeholder mappings where sensitive words will be replaced with placeholders
-   - Example: When you add `password` → `XXXXX`, any occurrence of "password" in the files will be replaced with "XXXXX"
-   - Example: When you add `admin@example.com` → `[EMAIL]`, all instances of that email will be replaced with "[EMAIL]"
-3. All occurrences of the defined sensitive words will be replaced with their placeholders in the output files
+3.  **Install Dependencies**:
+    *   Navigate to the project directory (`concatext-solidjs`) and run:
+        ```bash
+        npm install
+        ```
+        (Or `pnpm install` / `yarn install` if you prefer those package managers).
 
-This feature is useful for:
-- Protecting sensitive information when sharing code
-- Removing personally identifiable information
-- Anonymizing data before processing
+4.  **Run Development Server**:
+    *   Execute the following command:
+        ```bash
+        npm run dev
+        ```
+        (Or `pnpm dev` / `yarn dev`).
 
-## Configuration
+5.  **Access the Application**:
+    *   Open your web browser and go to `http://localhost:3000` (or the port indicated in your terminal, usually 3000).
 
-Concatext can be configured using YAML configuration files:
+## Build for Production (Optional)
 
-- **config.yaml** - Configuration for the command-line version
-- **config_gui.yaml** - Configuration for the GUI version
+To create an optimized build of the application for deployment:
 
-### Available Configuration Options
+1.  **Build Command**:
+    ```bash
+    npm run build
+    ```
+2.  The production-ready files will be generated in the `dist` directory. These static files can then be deployed to any web server or static hosting service.
 
-```yaml
-# Maximum number of tokens per output file
-max_tokens: 250000
+## License
 
-# Directory to save output files
-output_dir: "./output"
-
-# Include files that are not readable as text (can't be decoded)
-include_non_text_files: true
-
-# Placeholder text for non-text files
-non_text_file_placeholder: "This file format is not supported or cannot be decoded."
-
-# Separator text between files
-file_separator: "\n\n"
-
-# Directories to ignore
-ignore_dirs:
-  - node_modules
-  - .git
-  - .vscode
-
-# File patterns to ignore
-ignore_patterns:
-  - ".DS_Store"
-  - ".gitignore"
-  - "package-lock.json"
-
-# Template for formatting file blocks
-file_template: |
-  ========================================
-  {path} - start
-  ***========================================***
-  {content}
-  ***========================================***
-  {name} - end
-  ========================================
-
-# Obscured words configuration
-# Define mappings to replace sensitive words with placeholders in the output
-# format: word: placeholder
-obscured_words:
-  # Example (uncomment and modify as needed):
-  # password: "XXXXX"
-  # username: "USER"
-```
-
-## Output Format
-
-The tool generates output files with a naming pattern based on the input directory name. Each file in the output contains formatted content from the source files, structured according to the template defined in the configuration.
-````
+This project is released under the MIT License. See the `LICENSE` file for details (if one is present in the repository).

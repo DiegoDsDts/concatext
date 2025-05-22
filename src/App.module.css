@@ -1,0 +1,215 @@
+/* src/App.module.css */
+.app {
+  /* font-family is inherited from body (index.css) */
+  color: var(--text-color);
+}
+
+.header {
+  background-color: var(--color-secondary); /* Using a more neutral dark color */
+  color: white;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--box-shadow);
+}
+.header h1 {
+  font-size: 1.75rem; /* Adjusted from index.css if needed */
+  margin: 0;
+}
+
+.mainContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Increased gap */
+  padding: 0 1.5rem 1.5rem; /* Add padding around main content */
+  max-width: 1600px; /* Optional: Max width for very large screens */
+  margin: 0 auto; /* Center if max-width is applied */
+}
+
+/* Shared panel styling */
+.configPanel,
+.outputPanel {
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--component-background);
+  box-shadow: var(--box-shadow);
+}
+
+.configPanel {
+  flex: 1;
+  min-width: 350px; /* Slightly larger min-width */
+}
+
+.outputPanel {
+  flex: 2;
+  min-width: 450px; /* Slightly larger min-width */
+}
+
+.configPanel h2, 
+.outputPanel h2 {
+  font-size: 1.4rem; /* Adjusted from index.css */
+  margin-top: 0;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-color-light);
+}
+
+/* Styling for fieldset and legend in Config Panel */
+.configPanel.fieldset { /* Assuming App.jsx uses <fieldset class={styles.configPanel}> */
+  border: 1px solid var(--border-color); /* fieldset already has border, this is for consistency if needed */
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  background-color: var(--component-background);
+}
+.fieldsetLegend { /* Style for <legend> if used */
+  font-size: 1.4rem;
+  font-weight: 500;
+  padding: 0 0.5rem;
+  margin-left: 1rem; /* Align with content padding */
+  color: var(--text-color-light);
+}
+
+
+.configItem {
+  margin-bottom: 1rem;
+}
+
+.configItem label, /* For text/number inputs */
+.checkboxLabel {   /* For checkbox custom label */
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 500; /* Slightly bolder */
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+}
+
+.checkboxLabel { /* For aligning checkbox with its text */
+  display: flex;
+  align-items: center;
+  font-weight: normal; /* Normal weight for checkbox text */
+}
+
+.checkboxLabel input[type="checkbox"] {
+  margin-right: 0.6em; /* Space between checkbox and text */
+  /* Custom checkbox styles are now in index.css */
+}
+
+.configItem input[type="number"],
+.configItem input[type="text"] {
+  width: 100%;
+  /* General input styles are now in index.css */
+}
+
+.configSectionTitle {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+/* Button Styling - Adopting global .btn classes from index.css */
+/* We can add specific margin or width adjustments here if needed */
+.configButton {
+  /* Extends .btn from index.css */
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  /* Default to secondary button style */
+  composes: btn from global; /* If CSS Modules composes is set up for global */
+  /* If not, apply styles manually or use global classes in JSX */
+  background-color: var(--color-info); /* Example: info color for config buttons */
+  color: white;
+  border-color: var(--color-info);
+}
+.configButton:hover {
+  background-color: #117a8b; /* Darker info */
+  border-color: #10707f;
+}
+
+.actionButton {
+  /* Extends .btn and .btn-primary from index.css */
+  composes: btn btn-primary from global; /* If CSS Modules composes is set up */
+  font-size: 1rem; /* Larger font for primary action */
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.6rem 1rem; /* Slightly more padding */
+}
+.actionButton:disabled {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.clearLogButton {
+  /* Extends .btn and .btn-danger from index.css */
+  composes: btn btn-danger from global;
+  margin-top: 0.75rem;
+  float: right; /* Position to the right */
+}
+
+.logArea {
+  margin-bottom: 1.5rem;
+  clear:both; /* Clear float from clearLogButton */
+}
+
+.logTextarea {
+  width: 100%;
+  height: 250px; /* Increased height */
+  font-family: var(--font-family-mono);
+  font-size: 0.85em; /* Slightly smaller for more content */
+  background-color: #e9ecef; /* Light gray background for log */
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  resize: vertical;
+}
+.logTextarea:focus {
+  /* Focus styles from index.css are applied */
+}
+
+.downloadArea {
+  margin-top: 1rem;
+}
+
+.downloadList {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+.downloadListItem {
+  margin-bottom: 0.5rem;
+  padding: 0.75rem 1rem; /* Increased padding */
+  background-color: var(--component-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: background-color 0.15s ease-in-out;
+}
+.downloadListItem:hover {
+  background-color: #eef2f7; /* Subtle hover */
+}
+
+.downloadListItem a {
+  /* Link styles inherited from index.css */
+  font-weight: 500;
+}
+.downloadListItem a:hover {
+  /* Hover styles inherited */
+}
+
+/* Ensure fieldset legend styling if App.jsx uses it */
+.configPanel legend { /* More specific selector for the legend if used directly */
+  font-size: 1.4rem;
+  font-weight: 500;
+  padding: 0 0.5rem;
+  margin-left: 1rem; /* Adjust if configPanel padding changes */
+  color: var(--text-color-light);
+  margin-bottom: 1rem; /* Space below legend */
+}
